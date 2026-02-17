@@ -1,0 +1,35 @@
+<script>
+(function () {
+
+  function getCookie(name) {
+    var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  // 1. If URL contains ?internal_user=true → set cookie
+  var params = new URLSearchParams(location.search);
+  if (params.get("internal_user") === "true") {
+    document.cookie = [
+      "internal_user=1",
+      "Max-Age=" + (60 * 60 * 24 * 400),
+      "Path=/",
+      "Domain=.leahai.com",
+      "SameSite=Lax",
+      "Secure"
+    ].join("; ");
+  }
+
+  // 2. If cookie not present → stop
+  if (getCookie("internal_user") !== "1") return;
+
+  // 3. Send tag to Microsoft Clarity
+  (function tagClarity(attempts) {
+    if (typeof window.clarity === "function") {
+      window.clarity("set", "internal_user", "true");
+      return;
+    }
+    if (attempts < 10) setTimeout(function () { tagClarity(attempts + 1); }, 500);
+  })(0);
+
+})();
+</script>
