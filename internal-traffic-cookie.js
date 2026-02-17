@@ -1,4 +1,3 @@
-<script>
 (function () {
 
   function getCookie(name) {
@@ -32,4 +31,3 @@
   })(0);
 
 })();
-</script>
